@@ -36,8 +36,10 @@ var hero = {
 };
 
 var ball = {
-  xSpeed: 256,
-  ySpeed: 256,
+  xSpeed: 2,
+  ySpeed: 2,
+  x: 0,
+  y: 0
 };
 
 // Handle keyboard controls
@@ -51,19 +53,29 @@ addEventListener("keyup", function (e) {
 	delete keysDown[e.keyCode];
 }, false);
 
+var ballMoving = false;
+
 // Reset the game when the player catches a monster
 var reset = function () {
+	ballMoving = false;
 	hero.x = canvas.width / 2;
-	hero.y = canvas.height - 20;
+	hero.y = canvas.height - 36;
 };
 
 // Update game objects
 var update = function (modifier) {
-	if (37 in keysDown) { // Player holding left
+	if ( 37 in keysDown) { // Player holding left
 		hero.x -= hero.speed * modifier;
 	}
-	if (39 in keysDown) { // Player holding right
+	if ( 39 in keysDown) { // Player holding right
 		hero.x += hero.speed * modifier;
+	}
+	if ( 32 in keysDown && !ballMoving ) {
+	  ballMoving = true;
+	}
+	if ( ballMoving ) {
+	  //ball.x -= ball.xSpeed;
+	  ball.y -= ball.ySpeed;
 	}
 	// collision
 };
@@ -77,8 +89,13 @@ var render = function () {
 	if (heroReady) {
 	  ctx.drawImage(heroImage, hero.x, hero.y);
 	}
-	if (ballReady) {
-	  ctx.drawImage(ballImage, hero.x, hero.y);
+	if (ballReady && !ballMoving) {
+	  ctx.drawImage(ballImage, hero.x, hero.y - 36);
+	  ball.x = hero.x;
+	  ball.y = hero.y - 36;
+	}
+	else if ( ballMoving && ballReady ) {
+	  ctx.drawImage(ballImage, ball.x, ball.y);
 	}
 };
 
