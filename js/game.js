@@ -30,16 +30,31 @@ ballImage.onload = function () {
 
 ballImage.src = "images/monster.png";
 
+//brick image
+var brickReady = false;
+var brickImage = new Image();
+brickImage.onload = function() {
+  brickReady = true;
+};
+
+brickImage.src = "images/monster.png";
+
 // Game objects
 var hero = {
 	speed: 256 // movement in pixels per second
 };
 
 var ball = {
-  xSpeed: 2,
-  ySpeed: 2,
+  xSpeed: 0,
+  ySpeed: 5,
   x: 0,
   y: 0
+};
+
+function brick(health, x, y) {
+  this.health = health;
+  this.x = x;
+  this.y = y;
 };
 
 // Handle keyboard controls
@@ -54,12 +69,19 @@ addEventListener("keyup", function (e) {
 }, false);
 
 var ballMoving = false;
+var ballMovingUp = true;
+var brickArray = [];
 
 // Reset the game when the player catches a monster
 var reset = function () {
 	ballMoving = false;
 	hero.x = canvas.width / 2;
 	hero.y = canvas.height - 36;
+	for( var i = 0; i < 10; i++ ) {
+	  var b = new brick(3, i * ( canvas.width / 10 ), 50 );
+	  brickArray[i] = b;
+	}
+	console.log(brickArray);
 };
 
 // Update game objects
@@ -74,10 +96,38 @@ var update = function (modifier) {
 	  ballMoving = true;
 	}
 	if ( ballMoving ) {
-	  //ball.x -= ball.xSpeed;
-	  ball.y -= ball.ySpeed;
+	  ball.x -= ball.xSpeed;
+	  if (ballMovingUp ) {
+	    ball.y -= ball.ySpeed;
+	  }
+	  else {
+	    ball.y += ball.ySpeed;
+	  }
 	}
-	// collision
+// collision	
+	for( var i = 0; i < 10; i++) {
+	  var b = brickArray[i];
+	  if( ball.x <= (b.x + 32)
+	      && b.x <= (ball.x + 32)
+	      && ball.y <= (b.y + 32)
+	      && b.y <= (ball.y + 32) ) {
+	    ballMovingUp = false;
+	  }
+	}
+	if( ball.x <= (hero.x + 32)
+	    && hero.x <= (ball.x + 32)
+	    && ball.y <= (hero.y + 32)
+	    && hero.y <= (ball.y + 32)) {
+	  ball.xSpeed = (hero.x -  ball.x) / 10;
+	  ballMovingUp = true;
+	}
+
+	if( ball.y <= 0 || ball.y >= canvas.height ) {
+	  ballMovingUp = !ballMovingUp;
+	}
+	if (ball.x <= 0 || ball.x >= canvas.width ) {
+	  ball.xSpeed = -ball.xSpeed;
+	}
 };
 
 // Draw everything
@@ -96,6 +146,12 @@ var render = function () {
 	}
 	else if ( ballMoving && ballReady ) {
 	  ctx.drawImage(ballImage, ball.x, ball.y);
+	}
+	if (brickReady) {
+	  for( var i = 0; i < 10; i++){
+	    var b = brickArray[i];
+	    ctx.drawImage(brickImage, b.x, b.y );
+	  }
 	}
 };
 
