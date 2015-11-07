@@ -107,11 +107,16 @@ var update = function (modifier) {
 // collision	
 	for( var i = 0; i < 10; i++) {
 	  var b = brickArray[i];
+	  if ( b.health <= 0 ) {
+	    b.x = -100;
+	    b.y = -100;
+	  }
 	  if( ball.x <= (b.x + 32)
 	      && b.x <= (ball.x + 32)
 	      && ball.y <= (b.y + 32)
 	      && b.y <= (ball.y + 32) ) {
 	    ballMovingUp = false;
+	    b.health--;
 	  }
 	}
 	if( ball.x <= (hero.x + 32)
@@ -121,7 +126,9 @@ var update = function (modifier) {
 	  ball.xSpeed = (hero.x -  ball.x) / 10;
 	  ballMovingUp = true;
 	}
-
+	if( ball.y > canvas.height ) {
+	  reset();
+	}
 	if( ball.y <= 0 || ball.y >= canvas.height ) {
 	  ballMovingUp = !ballMovingUp;
 	}
