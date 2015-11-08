@@ -1,0 +1,32 @@
+{
+  // Required
+  "manifest_version": 2,
+  "name": "LinkBreaker",
+  "version": "1",
+
+  // Recommended
+  "description": "Break those pesky links!",
+  //"icons": {...},
+
+  // Pick one (or none)
+  "browser_action": {
+    "default_icon": {                    
+      "19": "images/hero.png"            
+    },
+    "default_title": "BrickBreaker"      
+  },
+
+  // Optional
+  "author": "Daniel and Graham",
+  "content_scripts": [
+    {
+      "matches": ["http://*/*","https://*/*"],
+      "js": ["BlockGeneration.js"]
+    }
+  ],
+  "background" : {
+    "scripts": ["background.js"]
+  },
+  "permissions": ["tabs"],
+  "version_name": "1"
+}
