@@ -61,9 +61,10 @@ $('a').each(function(idx, el){
 
 // Create the canvas
 var canvas = document.createElement("canvas");
+console.log("CAnvas: " + canvas);
 var ctx = canvas.getContext("2d");
 canvas.width = w;//$(document).width;
-canvas.height = 400;//h;//$(document).height;
+canvas.height = 400 > h ? 400 : h;//h;//$(document).height;
 console.log(canvas.width + " " + canvas.height);
 console.log(w + " " + h);
 document.body.appendChild(canvas);
