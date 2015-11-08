@@ -1,5 +1,5 @@
 /* Blocks and stuff */
-$(document).ready(function () {
+/*$(document).ready*/(function () {
 var colors = ['red', 'blue', 'green', 'yellow', 'orange', 'purple'];
 
 var blocks = [];
@@ -7,7 +7,6 @@ var numBlocks = 0;
 
 var $ = jQuery;
 var w = $('body').width();
-var h = $('body').height();
 
 var baseBlock = {
   "position":"absolute",
@@ -26,7 +25,6 @@ var createBlockFromElement = function($el, Xoffset, Yoffset, color) {
   var blockProps = {
     "background-color":color // set to assignColor later
   };
-  console.log($el);
   var $block = $('<div/>');
   $block.appendTo('body');
   $block.html($el.html());
@@ -34,10 +32,7 @@ var createBlockFromElement = function($el, Xoffset, Yoffset, color) {
   $block.animate({    
     "left":Xoffset,
     "top":Yoffset
-  }, 1738, function(){
-    reset();
-    main();
-  });
+  }, 1738 );
   $el.remove();
   return $block;
 }
@@ -48,7 +43,6 @@ var yoff = 5;
 $('a').each(function(idx, el){
   var $el = $(el);
   var color = assignColor();
-  console.log(color);
   blocks[numBlocks] = createBlockFromElement($el, xoff, yoff, assignColor());
   numBlocks++;
   xoff += 135;
@@ -57,62 +51,31 @@ $('a').each(function(idx, el){
     xoff = 5;
   }
 });
+
+var h = $('body').height();
 /* Game Logic */
 
 // Create the canvas
 var canvas = document.createElement("canvas");
-console.log("CAnvas: " + canvas);
 var ctx = canvas.getContext("2d");
-canvas.width = w;//$(document).width;
-canvas.height = 400 > h ? 400 : h;//h;//$(document).height;
-console.log(canvas.width + " " + canvas.height);
-console.log(w + " " + h);
+canvas.width = w;
+canvas.height = 400 > h ? 400 : h;
 document.body.appendChild(canvas);
-
-/*// Background image
-var bgReady = false;
-var bgImage = new Image();
-bgImage.onload = function () {
-  bgReady = true;
-};
-bgImage.src = "images/background.png";*/
-
-// Hero image
-var heroReady = false;
-var heroImage = new Image();
-heroImage.onload = function () {
-  heroReady = true;
-};
-heroImage.src = "http://www.stickylife.com/images/u/78ba77768fe749bead0d52bf596117d1-50.png";
-
-// Ball image
-var ballReady = false;
-var ballImage = new Image();
-ballImage.onload = function () {
-  ballReady = true;
-};
-
-ballImage.src = "http://ecx.images-amazon.com/images/I/01ufnXgq5RL._SS36_.jpg";
-
-//brick image
-var brickReady = false;
-var brickImage = new Image();
-brickImage.onload = function() {
-  brickReady = true;
-};
-
-brickImage.src = "http://scrawl.bplaced.net/perm/bar.png";
 
 // Game objects
 var hero = {
-  speed: 256 // movement in pixels per second
+  speed: 256, 
+  xSize: 100,
+  ySize: 30
 };
 
 var ball = {
   xSpeed: 0,
   ySpeed: 5,
-  x: 0,
-  y: 0
+  xSize: 32,
+  ySize: 32,
+  x: 1000,
+  y: 1000
 };
 
 function brick(health, x, y, block) {
@@ -120,6 +83,8 @@ function brick(health, x, y, block) {
   this.x = x;
   this.y = y;
   this.block = block;
+  this.xSize = 100;
+  this.ySize = 30;
 };
 
 // Handle keyboard controls
@@ -141,18 +106,13 @@ var brickArray = [];
 var reset = function () {
   ballMoving = false;
   hero.x = canvas.width / 2;
-  hero.y = canvas.height - 36;
+  hero.y = canvas.height - hero.xSize;
   for( var i = 0; i < numBlocks; i++ ) {
+    blocks[i].show();
     var offset = blocks[i].offset();
-    console.log(blocks[i].offset());
-    console.log(offset.left);
     var b = new brick(2, offset.left, offset.top, blocks[i] );
     brickArray[i] = b;
-    blocks[i].show();
-    console.log(blocks[i]);
-    console.log(b);
   }
-  console.log(brickArray);
 };
 
 // Update game objects
@@ -176,32 +136,32 @@ var update = function (modifier) {
     }
   }
 // collision
+  var numDead = 0;
   for( var i = 0; i < numBlocks; i++) {
-    var numDead = 0;
     var b = brickArray[i];
     if ( b.health <= 0 ) {
+      b.block.hide();
       b.x = -100;
       b.y = -100;
       numDead++;
-      b.block.hide();
-      if( numDead == numBlocks ) {
+      if( numDead >= numBlocks ) {
         reset();
+        return;
       }
     }
-    if( ball.x <= (b.x + 32)
-        && b.x <= (ball.x + 36)
-        && ball.y <= (b.y + 32)
-        && b.y <= (ball.y + 36) ) {
+    if( ball.x <= (b.x + b.xSize)
+        && b.x <= (ball.x + ball.xSize)
+        && ball.y <= (b.y + b.ySize)
+        && b.y <= (ball.y + ball.xSize) ) {
       ballMovingUp = false;
       b.health--;
-      console.log("hit");
     }
   }
-  if( ball.x <= (hero.x + 50)
-      && hero.x <= (ball.x + 36)
-      && ball.y <= (hero.y + 20)
-      && hero.y <= (ball.y + 36)) {
-    ball.xSpeed = (hero.x -  ( ball.x - 7)) / 10;
+  if( ball.x <= (hero.x + hero.xSize)
+      && hero.x <= (ball.x + ball.xSize)
+      && ball.y <= (hero.y + hero.ySize)
+      && hero.y <= (ball.y + ball.ySize)) {
+    ball.xSpeed = (hero.x -  ( ball.x - (hero.xSize - ball.xSize)/2)) / 10;
     ballMovingUp = true;
   }
   if( ball.y > canvas.height ) {
@@ -210,7 +170,7 @@ var update = function (modifier) {
   if( ball.y <= 0 ) {
     ballMovingUp = !ballMovingUp;
   }
-  if (ball.x <= 0 || ball.x + 36 >= canvas.width ) {
+  if (ball.x <= 0 || ball.x + ball.xSize >= canvas.width ) {
     ball.xSpeed = -ball.xSpeed;
   }
 };
@@ -222,20 +182,26 @@ var render = function () {
   }*/
   ctx.clearRect(0,0,canvas.width,canvas.height);
   if (heroReady) {
-    ctx.drawImage(heroImage, hero.x, hero.y);
+    ctx.beginPath();
+    ctx.rect(hero.x, hero.y, hero.xSize, hero.ySize);
+    ctx.stroke();
   }
-  if (ballReady && !ballMoving) {
-    ctx.drawImage(ballImage, hero.x + 7, hero.y - 36);
-    ball.x = hero.x + 7;
-    ball.y = hero.y - 36;
+  if (!ballMoving) {
+    ball.x = hero.x + (hero.xSize - ball.xSize)/2;
+    ball.y = hero.y - ball.ySize;
   }
-  else if ( ballMoving && ballReady ) {
-    ctx.drawImage(ballImage, ball.x, ball.y);
+  if(ballReady) {
+    ctx.beginPath();
+    ctx.rect(ball.x, ball.y, ball.xSize, ball.ySize); 
+    ctx.stroke();
   }
+  
   if (brickReady) {
     for( var i = 0; i < numBlocks; i++){
       var b = brickArray[i];
-      ctx.drawImage(brickImage, b.x, b.y );
+      ctx.beginPath();
+      ctx.rect(b.x,b.y,b.xSize,b.ySize);
+      ctx.stroke()
     }
   }
 };
@@ -260,5 +226,11 @@ requestAnimationFrame = win.requestAnimationFrame || win.webkitRequestAnimationF
 
 // Let's play this game!
 var then = Date.now();
-
+$(":animated").promise().done(function() {
+    reset();
+    main();
 });
+
+})();
+
+
