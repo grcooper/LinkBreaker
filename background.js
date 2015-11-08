@@ -1,13 +1,1 @@
-(function(){
-	
-	/* this file will set up all the chrome background stuff */
-
-
-	chrome.browserAction.onClicked.addListener(function(){
-		chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
-    		chrome.tabs.sendMessage(tabs[0].id, {action: "init_game"}, function(response) {});  
-		});
-	});
-
-	
-})();
+!function(){chrome.browserAction.onClicked.addListener(function(){chrome.tabs.query({active:!0,currentWindow:!0},function(n){chrome.tabs.sendMessage(n[0].id,{action:"init_game"},function(){})})})}();
