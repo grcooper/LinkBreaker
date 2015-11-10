@@ -1,23 +1,3 @@
-/* Blocks and stuff */
-/*$(document).ready*/
-// taken from StackOverflow
-function callAjax(url, callback){
-    var xmlhttp;
-    // compatible with IE7+, Firefox, Chrome, Opera, Safari
-    xmlhttp = new XMLHttpRequest();
-    xmlhttp.onreadystatechange = function(){
-        if (xmlhttp.readyState == 4 && xmlhttp.status == 200){
-            callback(xmlhttp.responseText);
-        }
-    }
-    xmlhttp.open("GET", url, true);
-    xmlhttp.send();
-}
-
-callAjax('http://code.jquery.com/jquery-2.1.4.min.js', function(res){
-  eval(res);
-});
-
 var bb_init = function () {
   var colors1 = ['#1abc9c', '#2ecc71', '#3498db', '#9b59b6', '#f1c40f', '#e67e22', '#e74c3c'];
   var colors2 = ['#16a085', '#27ae60', '#2980b9', '#8e44ad', '#f39c12', '#d35400', '#c0392b'];
@@ -115,7 +95,7 @@ var bb_init = function () {
 
   var ball = {
     xSpeed: 0,
-    ySpeed: 7,
+    ySpeed: 16,
     xSize: 32,
     ySize: 32,
     x: 1000,
@@ -288,7 +268,6 @@ var bb_init = function () {
 chrome.extension.onMessage.addListener(function(msg, sender, sendResponse) {
 
   if (msg.action == 'init_game') {
-    alert("Message recieved!");
     bb_init();
   }
 });
