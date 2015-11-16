@@ -8,24 +8,13 @@ var bb_init = function () {
   var $ = jQuery;
   var w = $('body').width();
 
-  var baseBlock = {
-    //"position":"absolute",
-    //"height":"30px",
-    //"width":"100px",
-    //"z-index": "420",
-    //"overflow": "hidden",
-    //"box-shadow": "5px 5px 5px"
-  };
-
   var assignColors = function(x){
     var n = Math.floor(Math.random() * 7)
     return [colors1[n], colors2[n]];
   }
 
   var createBlockFromElement = function($el, Xoffset, Yoffset, colors) {
-    // var blockProps = {
-    //   "background-color":color // set to assignColor later
-    // };
+
     var $block = $('<div/>');
     var offset = $el.offset();
     $block.appendTo('body');
@@ -40,9 +29,7 @@ var bb_init = function () {
       "overflow": "hidden"
     }); //overlay the thing with the thing
 
-    // $block.css($.extend(baseBlock, blockProps));
-
-    $block.animate({ 
+    $block.animate({
       "left":Xoffset,
       "top":Yoffset,
       "height":"30px",
@@ -88,7 +75,7 @@ var bb_init = function () {
 
   // Game objects
   var hero = {
-    speed: 512, 
+    speed: 512,
     xSize: 200,
     ySize: 30
   };
@@ -224,10 +211,10 @@ var bb_init = function () {
     //ballReady
     ctx.beginPath();
     ctx.fillStyle = "#95a5a6";
-    ctx.fillRect(ball.x, ball.y, ball.xSize, ball.ySize); 
+    ctx.fillRect(ball.x, ball.y, ball.xSize, ball.ySize);
     ctx.stroke();
-    
-    
+
+
     //brickReady
     for( var i = 0; i < numBlocks; i++){
       var b = brickArray[i];
@@ -235,7 +222,7 @@ var bb_init = function () {
       ctx.rect(b.x,b.y,b.xSize,b.ySize);
       ctx.stroke()
     }
-  
+
   };
 
   // The main game loop
