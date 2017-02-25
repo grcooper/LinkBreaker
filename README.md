@@ -1,3 +1,7 @@
+## Found here in the Chrome Webstore
+
+https://chrome.google.com/webstore/detail/linkbreaker/fabffkickmpmbkgikblicljlpnghknjd
+
 ## Inspiration
 
 We began this project with the Datto challenge in mind: what's the coolest thing we can do in under 4kb?
